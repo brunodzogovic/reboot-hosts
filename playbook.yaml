@@ -8,20 +8,17 @@
     shell: echo {{ansible_host}} 
 
   - name: Reboot
-    shell: sleep 2 && reboot
-    async: 30
+    shell: sleep 5 && reboot
+    async: 1
     poll: 0
     ignore_errors: true
 
   - name: Wait for play hosts to be up again
-    wait_for:
-      host: '{{hostvars[item].ansible_host}}'
-      port: 22
-      state: started
-      delay: 10
-      timeout: 45
-    with_items: '{{play_hosts}}' 
-    connection: local
+    wait_for_connection:
+      connect_timeout: 60
+      sleep: 5
+      delay: 5
+      timeout: 300
   
   - name:
     shell: uptime
